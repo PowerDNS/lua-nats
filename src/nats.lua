@@ -355,8 +355,12 @@ function command.connect(client)
     local data = response.read(client)
     if data.action == 'INFO' then
         client.information = cjson.decode(data.content)
-        if client.parameters.tls and (client.information['tls_available'] or client.information['tls_required']) then
-            client:upgrade_to_tls()
+        if client.parameters.tls then
+            if (client.information['tls_available'] or client.information['tls_required']) then
+                client:upgrade_to_tls()
+            else
+                nats.error('TLS is required but not offered by the server')
+            end
         end
     end
 
