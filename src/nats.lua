@@ -339,10 +339,11 @@ end
 
 function command.connect(client)
     local config = {
-        lang     = client.lang,
-        version  = client.version,
-        verbose  = client.verbose,
-        pedantic = client.pedantic,
+        lang         = client.lang,
+        version      = client.version,
+        verbose      = client.verbose,
+        pedantic     = client.pedantic,
+        tls_required = client.parameters.tls,
     }
 
     if client.user ~= nil and client.pass ~= nil then
