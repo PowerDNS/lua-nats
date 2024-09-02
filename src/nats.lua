@@ -293,7 +293,10 @@ local function create_connection(parameters)
     else
         if parameters.scheme then
             local scheme = parameters.scheme
-            assert(scheme == 'nats' or scheme == 'tcp', 'invalid scheme: '..scheme)
+            assert(scheme == 'nats' or scheme == 'tcp' or scheme == 'tls', 'invalid scheme: '..scheme)
+            if scheme == 'tls' then
+                parameters.tls = true
+            end
         end
         perform_connection, socket = connect_tcp, require('socket').tcp
     end
