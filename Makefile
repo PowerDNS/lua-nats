@@ -8,5 +8,6 @@ deps:
 	luarocks install luasocket
 	luarocks install lua-cjson
 	luarocks install uuid
+	luarocks install luasec
 
 .PHONY: test test-deps deps
