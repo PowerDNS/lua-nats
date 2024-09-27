@@ -38,7 +38,7 @@ local defaults = {
     tls_ca_path = nil,
     tls_ca_file = nil,
     tls_cert    = nil,
-    tls_key     = nil
+    tls_key     = nil,
 }
 
 -- ### Create a properly formatted inbox subject.
