@@ -1,0 +1,24 @@
+name: Test features
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  runner-job:
+    runs-on: ubuntu-latest
+    services:
+      nats:
+        image: nats
+        ports:
+          - "4222:4222"
+    steps:
+      - name: Install Luarocks
+        run: sudo apt-get update && sudo apt-get -y --no-install-recommends install luarocks
+      - name: Install telescope
+        run: sudo luarocks install telescope
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: sudo make deps
+      - name: Test Features
+        run: make test

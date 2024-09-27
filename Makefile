@@ -1,5 +1,5 @@
 test:
-	tsc -f tests/*.lua
+	make -C tests test
 
 test-deps:
 	luarocks install telescope
