@@ -48,7 +48,7 @@ local function merge_defaults(parameters)
     if parameters == nil then
         parameters = {}
     end
-    for k, v in pairs(defaults) do
+    for k, _ in pairs(defaults) do
         if parameters[k] == nil then
             parameters[k] = defaults[k]
         end
