@@ -1,17 +1,18 @@
 NATS Lua library
 ================
 
-![travis status](https://travis-ci.org/OystParis/lua-nats.svg?branch=master)
-
 LUA client for NATS messaging system. https://nats.io
 
->  Note: lua-nats is under heavy development.
+This repository is a fork of the [original implementation][original]
+by [dawnangel][github].
+It adds optional support for connecting to a NATS server over TLS,
+and is maintained by [PowerDNS.com B.V][PowerDNS].
 
-by [dawnangel][github]
+[original]: https://github.com/DawnAngel/lua-nats "Original repository"
+[github]: https://github.com/dawnangel/ "Github repositories"
+[PowerDNS]: https://www.powerdns.com/ "PowerDNS.com B.V"
 
-[github]: http://github.com/dawnangel/ "Github repositories"
-
-[![License](http://img.shields.io/:license-mit-blue.svg)](http://mit-license.org)
+[![License](https://img.shields.io/:license-mit-blue.svg)](https://mit-license.org)
 
 Requirements
 ------------
