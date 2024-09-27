@@ -235,7 +235,6 @@ client_prototype.upgrade_to_tls = function(client)
     local status, luasec = pcall(require, 'ssl')
     if not status then
         nats.error('TLS is required but the luasec library is not available')
-        return
     end
     local params = {
         capath = client.parameters.tls_ca_path,
