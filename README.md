@@ -21,6 +21,7 @@ Requirements
 * [lua-cjson](https://github.com/mpx/lua-cjson)
 * [uuid](https://github.com/Tieske/uuid)
 * [nats](https://github.com/derekcollison/nats) or [gnatsd](https://github.com/apcera/gnatsd)
+* [luasec](https://github.com/lunarmodules/luasec) if TLS support is needed
 
 This is a NATS Lua library for Lua 5.1, 5.2 and 5.3. The
 libraries are copyright by their author 2015 (see the Creators
@@ -91,6 +92,22 @@ local user, password = 'user', 'password'
 client:set_auth(user, password)
 
 -- connect to the server
+client:connect()
+```
+
+### Basic usage: TLS connection
+
+```lua
+local nats = require 'nats'
+
+local client = nats.connect({
+    host = '127.0.0.1',
+    port = 4222,
+    tls = true,
+    tls_ca_path = '/etc/ssl/certs',
+})
+
+-- connect to the server using TLS and validating the server certificate
 client:connect()
 ```
 

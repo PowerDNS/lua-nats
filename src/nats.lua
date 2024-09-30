@@ -34,6 +34,11 @@ local defaults = {
     port        = 4222,
     tcp_nodelay = true,
     path        = nil,
+    tls         = false,
+    tls_ca_path = nil,
+    tls_ca_file = nil,
+    tls_cert    = nil,
+    tls_key     = nil,
 }
 
 -- ### Create a properly formatted inbox subject.
@@ -76,10 +81,12 @@ local function load_methods(proto, commands)
     return client
 end
 
-local function create_client(client_proto, client_socket, commands)
+local function create_client(client_proto, client_socket, commands, parameters)
     local client = load_methods(client_proto, commands)
     -- assign client error handler
     client.error = nats.error
+    -- keep parameters around, for TLS
+    client.parameters = parameters
     -- assign client network methods
     client.network = {
         socket = client_socket,
@@ -224,6 +231,26 @@ client_prototype.get_server_info = function(client)
     return client.information
 end
 
+client_prototype.upgrade_to_tls = function(client)
+    local status, luasec = pcall(require, 'ssl')
+    if not status then
+        nats.error('TLS is required but the luasec library is not available')
+    end
+    local params = {
+        capath = client.parameters.tls_ca_path,
+        cafile = client.parameters.tls_ca_file,
+        certificate = client.parameters.tls_cert,
+        key = client.parameters.tls_key,
+        mode = "client",
+        options = {"all", "no_sslv3"},
+        protocol = "tlsv1_2",
+        verify = "peer",
+    }
+
+    client.network.socket = luasec.wrap(client.network.socket, params)
+    client.network.socket:dohandshake()
+end
+
 client_prototype.shutdown = function(client)
     client.network.socket:shutdown()
 end
@@ -265,7 +292,10 @@ local function create_connection(parameters)
     else
         if parameters.scheme then
             local scheme = parameters.scheme
-            assert(scheme == 'nats' or scheme == 'tcp', 'invalid scheme: '..scheme)
+            assert(scheme == 'nats' or scheme == 'tcp' or scheme == 'tls', 'invalid scheme: '..scheme)
+            if scheme == 'tls' then
+                parameters.tls = true
+            end
         end
         perform_connection, socket = connect_tcp, require('socket').tcp
     end
@@ -295,7 +325,7 @@ function nats.connect(...)
     end
 
     local socket = create_connection(merge_defaults(parameters))
-    local client = create_client(client_prototype, socket, commands)
+    local client = create_client(client_prototype, socket, commands, parameters)
 
     return client
 end
@@ -308,10 +338,11 @@ end
 
 function command.connect(client)
     local config = {
-        lang     = client.lang,
-        version  = client.version,
-        verbose  = client.verbose,
-        pedantic = client.pedantic,
+        lang         = client.lang,
+        version      = client.version,
+        verbose      = client.verbose,
+        pedantic     = client.pedantic,
+        tls_required = client.parameters.tls,
     }
 
     if client.user ~= nil and client.pass ~= nil then
@@ -319,13 +350,20 @@ function command.connect(client)
         config.pass = client.pass
     end
 
-    request.raw(client, 'CONNECT '..cjson.encode(config)..'\r\n')
-
     -- gather the server information
     local data = response.read(client)
     if data.action == 'INFO' then
         client.information = cjson.decode(data.content)
+        if client.parameters.tls then
+            if (client.information['tls_available'] or client.information['tls_required']) then
+                client:upgrade_to_tls()
+            else
+                nats.error('TLS is required but not offered by the server')
+            end
+        end
     end
+
+    request.raw(client, 'CONNECT '..cjson.encode(config)..'\r\n')
 end
 
 function command.ping(client)
