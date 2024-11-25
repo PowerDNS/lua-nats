@@ -22,7 +22,7 @@ dependencies = {
    "lua >= 5.1",
    "luasocket",
    "lua-cjson",
-   "uuid"
+   "uuid >= 1.0.0",
 }
 
 build = {

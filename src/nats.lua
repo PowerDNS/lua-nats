@@ -10,6 +10,10 @@ local nats = {
 local cjson  = require('cjson')
 local uuid   = require('uuid')
 
+-- set the random number generator for /dev/urandom. On Windows this isn't available
+-- and it returns nil+error, which is passed on to set_rng which then
+-- throws a meaningful error.
+uuid.set_rng(uuid.rng.urandom())
 
 -- ### Local properties ###
 
