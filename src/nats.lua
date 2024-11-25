@@ -1,5 +1,5 @@
 local nats = {
-    _VERSION     = 'lua-nats 0.0.2',
+    _VERSION     = 'lua-nats 0.0.4',
     _DESCRIPTION = 'LUA client for NATS messaging system. https://nats.io',
     _COPYRIGHT   = 'Copyright (C) 2015 Eric Pinto',
 }
@@ -10,6 +10,10 @@ local nats = {
 local cjson  = require('cjson')
 local uuid   = require('uuid')
 
+-- set the random number generator for /dev/urandom. On Windows this isn't available
+-- and it returns nil+error, which is passed on to set_rng which then
+-- throws a meaningful error.
+uuid.set_rng(uuid.rng.urandom())
 
 -- ### Local properties ###
 
@@ -20,7 +24,7 @@ local client_prototype = {
     user          = nil,
     pass          = nil,
     lang          = 'lua',
-    version       = '0.0.2',
+    version       = '0.0.4',
     verbose       = false,
     pedantic      = false,
     trace         = false,
