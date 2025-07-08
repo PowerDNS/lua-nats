@@ -1,9 +1,9 @@
 package = "nats"
-version = "0.0.4-1"
+version = "0.0.5-1"
 
 source = {
    url = "git://github.com/PowerDNS/lua-nats.git",
-   tag = "0.0.4"
+   tag = "0.0.5"
 }
 
 description = {

@@ -1,5 +1,5 @@
 local nats = {
-    _VERSION     = 'lua-nats 0.0.4',
+    _VERSION     = 'lua-nats 0.0.5',
     _DESCRIPTION = 'LUA client for NATS messaging system. https://nats.io',
     _COPYRIGHT   = 'Copyright (C) 2015 Eric Pinto',
 }
@@ -24,7 +24,7 @@ local client_prototype = {
     user          = nil,
     pass          = nil,
     lang          = 'lua',
-    version       = '0.0.4',
+    version       = '0.0.5',
     verbose       = false,
     pedantic      = false,
     trace         = false,
