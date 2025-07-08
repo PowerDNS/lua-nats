@@ -389,16 +389,17 @@ end
 
 function command.request(client, subject, payload, callback)
     local inbox = create_inbox()
-    unique_id = client:subscribe(inbox, function(message, reply)
+    local unique_id = uuid()
+    client:subscribe(inbox, function(message, reply)
         client:unsubscribe(unique_id)
         callback(message, reply)
-    end)
+    end, unique_id)
     client:publish(subject, payload, inbox)
     return unique_id, inbox
 end
 
-function command.subscribe(client, subject, callback)
-    local unique_id = uuid()
+function command.subscribe(client, subject, callback, unique_id)
+    unique_id = unique_id or uuid()
     request.raw(client, 'SUB '..subject..' '..unique_id..'\r\n')
     client.subscriptions[unique_id] = callback
 
